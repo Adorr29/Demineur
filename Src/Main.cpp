@@ -1,18 +1,19 @@
 /*
 ** EPITECH PROJECT, 2019
-** for_norme
+** Demineur
 ** File description:
 ** Main.cpp
 */
 
 #include <iostream>
 #include <regex>
-#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "World.hpp"
 
 using namespace std;
 using namespace sf;
+
+#define IS_NUMBER(str) regex_match(str, regex(R"(^[1-9]\d*$)"))
 
 void game(RenderWindow &window, World &world)
 {
@@ -43,8 +44,6 @@ void menu(const Vector2u &size, const size_t &nbMine)
     game(window, world);
 }
 
-#define IS_NUMBER(str) regex_match(str, regex(R"(^[1-9]\d*$)"))
-
 static void help(const string &exe)
 {
     cout << "Usage: " << exe << " [SIZEX] [SIZEY] [NBMINE]" << endl << endl;
@@ -60,7 +59,7 @@ int main(int argc, char **argv)
     else if (argc == 2 && IS_NUMBER(argv[1]))
         menu(Vector2u(atoi(argv[1]), atoi(argv[1])), atoi(argv[1]));
     else if (argc == 3 && IS_NUMBER(argv[1]) && IS_NUMBER(argv[2]))
-        menu(Vector2u(atoi(argv[1]), atoi(argv[2])), sqrt(atoi(argv[1]) * atoi(argv[2])));
+        menu(Vector2u(atoi(argv[1]), atoi(argv[2])), atoi(argv[1]) * atoi(argv[2]) / 10);
     else if (argc == 4 && IS_NUMBER(argv[1]) && IS_NUMBER(argv[2]) && IS_NUMBER(argv[3]) && atoi(argv[3]) <= atoi(argv[1]) * atoi(argv[2]))
         menu(Vector2u(atoi(argv[1]), atoi(argv[2])), atoi(argv[3]));
     else if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")))

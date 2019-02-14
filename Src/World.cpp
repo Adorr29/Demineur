@@ -1,14 +1,11 @@
 /*
 ** EPITECH PROJECT, 2019
-** for_norme
+** Demineur
 ** File description:
 ** World.cpp
 */
 
 #include <vector>
-#include <cmath>
-#include <thread> // ?
-#include <chrono> // ?
 #include "World.hpp"
 
 using namespace std;
@@ -24,7 +21,7 @@ World::World(const Uint32 &_size)
 }
 
 World::World(const Vector2u &_size)
-    : World(Vector2u(_size.x, _size.y), sqrt(_size.x * _size.y))
+    : World(Vector2u(_size.x, _size.y), _size.x * _size.y / 10)
 {
 }
 

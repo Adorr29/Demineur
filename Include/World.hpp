@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2019
-** for_norme
+** Demineur
 ** File description:
 ** World.hpp
 */
