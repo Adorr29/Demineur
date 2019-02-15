@@ -23,9 +23,11 @@ void game(RenderWindow &window, World &world)
                 window.close();
             else if (event.type == Event::MouseButtonPressed) {
                 if (event.mouseButton.button == Mouse::Left)
-                    world.setReveal(Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    world.setReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
                 else if (event.mouseButton.button == Mouse::Right)
-                    world.setFlag(Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    world.setFlag(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                else if (event.mouseButton.button == Mouse::Middle)
+                    world.setAutoReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
             }
         }
         window.clear();
@@ -54,6 +56,7 @@ static void help(const string &exe)
 
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
     if (argc == 1)
         menu(Vector2u(10, 10), 10);
     else if (argc == 2 && IS_NUMBER(argv[1]))

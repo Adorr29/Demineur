@@ -30,8 +30,10 @@ public:
     ~World();
     const Vector2u &getSize() const;
     const size_t &getNbMine() const;
-    bool setReveal(const Vector2i &pos);
-    bool setFlag(const Vector2i &pos);
+    bool setReveal(const Vector2u &pos);
+    bool setFlag(const Vector2u &pos);
+    bool setAutoReveal(const Vector2u &pos);
+    Vector2u convertMousePos(const Vector2i &mousePos) const;
 
 private:
     void draw(RenderTarget &target, RenderStates states) const;

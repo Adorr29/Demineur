@@ -10,6 +10,11 @@
 
 using namespace std;
 
+#define MINI(pos) (pos.x == 0 ? 0 : -1)
+#define MINJ(pos) (pos.y == 0 ? 0 : -1)
+#define MAXI(pos) (pos.x == size.x - 1 ? 0 : 1)
+#define MAXJ(pos) (pos.y == size.y - 1 ? 0 : 1)
+
 World::World()
     : World(10)
 {
@@ -54,43 +59,62 @@ const size_t &World::getNbMine() const
     return nbMine;
 }
 
-bool World::setReveal(const Vector2i &pos)
+bool World::setReveal(const Vector2u &pos)
 {
-    Uint32 x;
-    Uint32 y;
-
-    if (pos.x < affRect.left || pos.y < affRect.top)
+    if (pos.x >= size.x || pos.y >= size.y)
         return false;
-    x = pos.x / (affRect.width / size.x) - affRect.left;
-    y = pos.y / (affRect.height / size.y) - affRect.top;
-    if (x >= size.x || y >= size.y)
+    if (tab[pos.x][pos.y].reveal || tab[pos.x][pos.y].flag)
         return false;
-    if (tab[x][y].reveal || tab[x][y].flag)
-        return false;
-    tab[x][y].reveal = true;
+    tab[pos.x][pos.y].reveal = true;
     if (first) {
         generate();
         first = false;
     }
-    spreadReveal(Vector2u(x, y));
+    spreadReveal(pos);
     return true;
 }
 
-bool World::setFlag(const Vector2i &pos)
+bool World::setFlag(const Vector2u &pos)
 {
-    Uint32 x;
-    Uint32 y;
-
-    if (pos.x < affRect.left || pos.y < affRect.top)
+    if (pos.x >= size.x || pos.y >= size.y)
         return false;
-    x = pos.x / (affRect.width / size.x) - affRect.left;
-    y = pos.y / (affRect.height / size.y) - affRect.top;
-    if (x >= size.x || y >= size.y)
+    if (tab[pos.x][pos.y].reveal)
         return false;
-    if (tab[x][y].reveal)
-        return false;
-    tab[x][y].flag = !tab[x][y].flag;
+    tab[pos.x][pos.y].flag = !tab[pos.x][pos.y].flag;
     return true;
+}
+
+bool World::setAutoReveal(const Vector2u &pos)
+{
+    Uint8 nbFlag;
+
+    if (pos.x >= size.x || pos.y >= size.y)
+        return false;
+    if (!tab[pos.x][pos.y].reveal || !tab[pos.x][pos.y].nbMineAround || tab[pos.x][pos.y].mine)
+        return false;
+    for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
+        for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
+            if (tab[pos.x + i][pos.y + j].flag)
+                nbFlag++;
+    if (nbFlag != tab[pos.x][pos.y].nbMineAround)
+        return false;
+    for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
+        for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
+            setReveal(Vector2u(pos.x + i, pos.y + j));
+    return true;
+}
+
+Vector2u World::convertMousePos(const Vector2i &mousePos) const
+{
+    Vector2u pos;
+
+    if (mousePos.x < affRect.left || mousePos.y < affRect.top)
+        return size;
+    pos.x = mousePos.x / (affRect.width / size.x) - affRect.left;
+    pos.y = mousePos.y / (affRect.height / size.y) - affRect.top;
+    if (pos.x >= size.x || pos.y >= size.y)
+        return size;
+    return pos;
 }
 
 void World::draw(RenderTarget &target, RenderStates states) const
@@ -158,28 +182,18 @@ void World::generate()
 
 void World::setNbMineAround(const Vector2u &pos)
 {
-    Int8 mini = pos.x == 0 ? 0 : -1;
-    Int8 minj = pos.y == 0 ? 0 : -1;
-    Int8 maxi = pos.x == size.x - 1 ? 0 : 1;
-    Int8 maxj = pos.y == size.y - 1 ? 0 : 1;
-
-    for (Int8 i = mini; i <= maxi; i++)
-        for (Int8 j = minj; j <= maxj; j++)
+    for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
+        for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
             tab[pos.x + i][pos.y + j].nbMineAround++;
 }
 
 void World::spreadReveal(const Vector2u &pos)
 {
     tab[pos.x][pos.y].reveal = true;
-    if (!tab[pos.x][pos.y].nbMineAround) {
-        Int8 mini = pos.x == 0 ? 0 : -1;
-        Int8 minj = pos.y == 0 ? 0 : -1;
-        Int8 maxi = pos.x == size.x - 1 ? 0 : 1;
-        Int8 maxj = pos.y == size.y - 1 ? 0 : 1;
-
-        for (Int8 i = mini; i <= maxi; i++)
-            for (Int8 j = minj; j <= maxj; j++)
-                if (!tab[pos.x + i][pos.y + j].reveal)
-                    spreadReveal(Vector2u(pos.x + i, pos.y + j));
-    }
+    if (tab[pos.x][pos.y].nbMineAround)
+        return;
+    for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
+        for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
+            if (!tab[pos.x + i][pos.y + j].reveal)
+                spreadReveal(Vector2u(pos.x + i, pos.y + j));
 }
