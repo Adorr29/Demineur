@@ -5,3 +5,7 @@
 #*#
 vgcore.*
 Demineur
+
+*.cmake
+CMakeCache.txt
+CMakeFiles
