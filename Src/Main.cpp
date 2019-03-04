@@ -22,12 +22,14 @@ void game(RenderWindow &window, World &world)
             if (event.type == Event::Closed)
                 window.close();
             else if (event.type == Event::MouseButtonPressed) {
-                if (event.mouseButton.button == Mouse::Left)
-                    world.setReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
-                else if (event.mouseButton.button == Mouse::Right)
-                    world.setFlag(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
-                else if (event.mouseButton.button == Mouse::Middle)
-                    world.setAutoReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                if (!world.checkEnd()) {
+                    if (event.mouseButton.button == Mouse::Left)
+                        world.setReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                    else if (event.mouseButton.button == Mouse::Right)
+                        world.setFlag(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                    else if (event.mouseButton.button == Mouse::Middle)
+                        world.setAutoReveal(world.convertMousePos(Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                }
             }
         }
         window.clear();

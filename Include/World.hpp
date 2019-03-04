@@ -30,6 +30,7 @@ public:
     ~World();
     const Vector2u &getSize() const;
     const size_t &getNbMine() const;
+    Int8 checkEnd() const;
     bool setReveal(const Vector2u &pos);
     bool setFlag(const Vector2u &pos);
     bool setAutoReveal(const Vector2u &pos);

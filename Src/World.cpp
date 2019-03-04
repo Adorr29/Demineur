@@ -62,6 +62,19 @@ const size_t &World::getNbMine() const
     return nbMine;
 }
 
+Int8 World::checkEnd() const
+{
+    for (Uint32 i = 0; i < size.x; i++)
+        for (Uint32 j = 0; j < size.y; j++)
+            if (tab[i][j].reveal && tab[i][j].mine)
+                return -1;
+    for (Uint32 i = 0; i < size.x; i++)
+        for (Uint32 j = 0; j < size.y; j++)
+            if (!tab[i][j].reveal && !(tab[i][j].mine && tab[i][j].flag))
+                return 0;
+    return 1;
+}
+
 bool World::setReveal(const Vector2u &pos)
 {
     if (pos.x >= size.x || pos.y >= size.y)
