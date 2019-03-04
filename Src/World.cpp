@@ -47,6 +47,9 @@ World::World(const Vector2u &_size, const size_t &_nbMine)
 
 World::~World()
 {
+    for (Uint32 i = 0; i < size.x; i++)
+        delete [] tab[i];
+    delete [] tab;
 }
 
 const Vector2u &World::getSize() const
