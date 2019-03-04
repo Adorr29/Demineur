@@ -70,7 +70,10 @@ bool World::setReveal(const Vector2u &pos)
         generate();
         first = false;
     }
-    spreadReveal(pos);
+    if (tab[pos.x][pos.y].mine)
+        revealMine();
+    else
+        spreadReveal(pos);
     return true;
 }
 
@@ -124,7 +127,7 @@ void World::draw(RenderTarget &target, RenderStates states) const
     Vector2u affCaseSize;
     Uint32 caseSize;
 
-    if (!texture.loadFromFile("Resources/Texture/cases.png"))
+    if (!texture.loadFromFile("Resources/Texture/Cases.png"))
         return;
     vertexArray.setPrimitiveType(Quads);
     affCaseSize.x = affRect.width / size.x;
@@ -185,6 +188,14 @@ void World::setNbMineAround(const Vector2u &pos)
     for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
         for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
             tab[pos.x + i][pos.y + j].nbMineAround++;
+}
+
+void World::revealMine()
+{
+    for (Uint32 i = 0; i < size.x; i++)
+        for (Uint32 j = 0; j < size.y; j++)
+            if (tab[i][j].mine)
+                tab[i][j].reveal = true;
 }
 
 void World::spreadReveal(const Vector2u &pos)

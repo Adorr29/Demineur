@@ -39,6 +39,7 @@ private:
     void draw(RenderTarget &target, RenderStates states) const;
     void generate();
     void setNbMineAround(const Vector2u &pos);
+    void revealMine();
     void spreadReveal(const Vector2u &pos);
 
 public:

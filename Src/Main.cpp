@@ -36,12 +36,23 @@ void game(RenderWindow &window, World &world)
     }
 }
 
+bool setIcon(RenderWindow &window, const string &fileName)
+{
+    Image image;
+
+    if (!image.loadFromFile(fileName))
+        return false;
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+    return true;
+}
+
 void menu(const Vector2u &size, const size_t &nbMine)
 {
     World world(size, nbMine);
     RenderWindow window(VideoMode(size.x * 50, size.y * 50), "Demineur");
 
     world.affRect = IntRect(0, 0, window.getSize().x, window.getSize().y);
+    setIcon(window, "Resources/Texture/Icon.png");
     window.setFramerateLimit(30);
     game(window, world);
 }
@@ -63,7 +74,7 @@ int main(int argc, char **argv)
         menu(Vector2u(atoi(argv[1]), atoi(argv[1])), atoi(argv[1]));
     else if (argc == 3 && IS_NUMBER(argv[1]) && IS_NUMBER(argv[2]))
         menu(Vector2u(atoi(argv[1]), atoi(argv[2])), atoi(argv[1]) * atoi(argv[2]) / 10);
-    else if (argc == 4 && IS_NUMBER(argv[1]) && IS_NUMBER(argv[2]) && IS_NUMBER(argv[3]) && atoi(argv[3]) <= atoi(argv[1]) * atoi(argv[2]))
+    else if (argc == 4 && IS_NUMBER(argv[1]) && IS_NUMBER(argv[2]) && IS_NUMBER(argv[3]) && atoi(argv[3]) < atoi(argv[1]) * atoi(argv[2]))
         menu(Vector2u(atoi(argv[1]), atoi(argv[2])), atoi(argv[3]));
     else if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")))
         help(string(argv[0]));
