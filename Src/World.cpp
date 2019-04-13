@@ -221,6 +221,6 @@ void World::spreadReveal(const Vector2u &pos)
         return;
     for (Int8 i = MINI(pos); i <= MAXI(pos); i++)
         for (Int8 j = MINJ(pos); j <= MAXJ(pos); j++)
-            if (!tab[pos.x + i][pos.y + j].reveal)
+            if (!tab[pos.x + i][pos.y + j].reveal && !tab[pos.x + i][pos.y + j].flag)
                 spreadReveal(Vector2u(pos.x + i, pos.y + j));
 }
