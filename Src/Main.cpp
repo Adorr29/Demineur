@@ -64,7 +64,7 @@ static void help(const string &exe)
     cout << "Usage: " << exe << " [SIZEX] [SIZEY] [NBMINE]" << endl << endl;
     cout << "SIZEX:\twidth of tab" << endl;
     cout << "SIZEY:\theight of tab" << endl;
-    cout << "NBMINE:\thnumber of mine on tab" << endl;
+    cout << "NBMINE:\tnumber of mine on tab" << endl;
 }
 
 int main(int argc, char **argv)
